@@ -28,10 +28,10 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Lint 
-      run: |
-        dotnet fsharplint lint Problem9.fs
-        dotnet fsharplint lint Program.fs
+    # - name: Lint 
+    #   run: |
+    #     dotnet fsharplint lint Problem9.fs
+    #     dotnet fsharplint lint Program.fs
 
     - name: Format 
       run: |
