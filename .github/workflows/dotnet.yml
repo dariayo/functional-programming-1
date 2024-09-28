@@ -20,7 +20,7 @@ jobs:
           dotnet-version: '8.0.x'
           
       - name: Restore dependencies
-        run: dotnet restore FirstIonideProject/FirstIonideProject.fsproj
+        run: dotnet restore ./lab1.fsproj
 
       - name: Build project
         run: dotnet build ./
