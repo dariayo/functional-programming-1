@@ -19,22 +19,19 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
-    - name: Setup linter  
-      run: dotnet tool install -g dotnet-fsharplint
-    - name: Setup formatter
-      run: dotnet tool install -g fantomas
-    - name: Restore dependencies
+        dotnet-version: 7.0.x
+   - name: Restore dependencies
       run: dotnet restore
-    - name: Build
+    - name: Install local tools
+      run: dotnet tool restore
+    - name: Build project
       run: dotnet build --no-restore
-    # - name: Lint 
-    #   run: |
-    #     dotnet fsharplint lint Problem9.fs
-    #     dotnet fsharplint lint Program.fs
-
+    - name: Lint 
+      run: |
+        dotnet fsharplint lint Problem9.fs
+        dotnet fsharplint lint Program.fs
     - name: Format 
       run: |
-        fantomas Problem9.fs
-        fantomas Problem21.fs
-        fantomas Program.fs
+        dotnet fantomas Problem9.fs
+        dotnet fantomas Problem21.fs
+        dotnet fantomas Program.fs
