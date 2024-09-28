@@ -28,6 +28,8 @@ jobs:
       run: dotnet build --no-restore
     - name: Lint 
       run: |
+        dotnet tool install -g dotnet-fsharplint
+        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
         dotnet fsharplint lint ./
     - name: Format 
       run: |
