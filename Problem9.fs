@@ -4,43 +4,37 @@ module Problem9
 let rec findPythagoreanTripletTailRec a b =
     let c = 1000 - a - b
 
-    if a * a + b * b = c * c then
-        (a, b, c)
-    elif b < 1000 - a then
-        findPythagoreanTripletTailRec a (b + 1)
-    else
-        findPythagoreanTripletTailRec (a + 1) (a + 2)
+    match a * a + b * b = c * c, b < 1000 - a with
+    | true, _ -> (a, b, c)                
+    | false, true -> findPythagoreanTripletTailRec a (b + 1)
+    | false, false -> findPythagoreanTripletTailRec (a + 1) (a + 2) 
 
 
 //Recursive
 let rec findB a b =
     let c = 1000 - a - b
 
-    if a * a + b * b = c * c then
-        (a, b, c)
-    elif b < 1000 - a - 1 then
+    match a * a + b * b = c * c, b < 1000 - a - 1 with
+    | true, _ -> (a, b, c)                
+    | false, true -> 
         let result = findB a (b + 1)
-
         match result with
-        | (-1, -1, -1) -> (-1, -1, -1)
-        | _ -> result
-    else
-        (-1, -1, -1)
+        | (-1, -1, -1) -> (-1, -1, -1)     
+        | _ -> result                     
+    | false, false -> (-1, -1, -1)        
 
 let rec findA a =
-    if a < 999 then
+    match a < 999 with
+    | true -> 
         let result = findB a (a + 1)
-
-        if result <> (-1, -1, -1) then
-            result
-        else
+        match result with
+        | (-1, -1, -1) -> 
             let nextResult = findA (a + 1)
-
             match nextResult with
-            | (-1, -1, -1) -> (-1, -1, -1)
-            | _ -> nextResult
-    else
-        (-1, -1, -1)
+            | (-1, -1, -1) -> (-1, -1, -1)  
+            | _ -> nextResult            
+        | _ -> result                     
+    | false -> (-1, -1, -1)         
 
 let solveEuler9 =
     let a, b, c = findA 1

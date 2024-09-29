@@ -3,44 +3,41 @@ module Problem21
 //Tail recursive
 let sumOfDivisorsTailRec n =
     let rec loop i acc =
-        if i = 0 then acc
-        elif n % i = 0 then loop (i - 1) (acc + i)
-        else loop (i - 1) acc
+        match i with
+        | 0 -> acc  
+        | _ when n % i = 0 -> loop (i - 1) (acc + i) 
+        | _ -> loop (i - 1) acc 
 
     loop (n / 2) 0
 
 let findAmicableNumbersTailRec limit =
     let rec loop current sum =
-        if current >= limit then
-            sum
-        else
+        match current >= limit with
+        | true -> sum  
+        | false ->
             let b = sumOfDivisorsTailRec current
-
-            if b <> current && b < limit && sumOfDivisorsTailRec b = current then
-                loop (current + 1) (sum + current)
-            else
-                loop (current + 1) sum
+            match b <> current, b < limit, sumOfDivisorsTailRec b = current with
+            | true, true, true -> loop (current + 1) (sum + current) 
+            | _ -> loop (current + 1) sum  
 
     loop 1 0
 
 //Recursive
 
 let rec sumOfDivisorsNonTailRec n i =
-    if i = 0 then 0
-    elif n % i = 0 then i + sumOfDivisorsNonTailRec n (i - 1)
-    else sumOfDivisorsNonTailRec n (i - 1)
+    match i with
+    | 0 -> 0 
+    | _ when n % i = 0 -> i + sumOfDivisorsNonTailRec n (i - 1) 
+    | _ -> sumOfDivisorsNonTailRec n (i - 1)
 
 let rec findAmicableNumbersNonTailRec limit current sum =
-    if current >= limit then
-        sum
-    else
+    match current >= limit with
+    | true -> sum  
+    | false ->
         let b = sumOfDivisorsNonTailRec current (current / 2)
-
-        if b <> current && b < limit && sumOfDivisorsNonTailRec b (b / 2) = current then
-            findAmicableNumbersNonTailRec limit (current + 1) (sum + current)
-        else
-            findAmicableNumbersNonTailRec limit (current + 1) sum
-
+        match b <> current, b < limit, sumOfDivisorsNonTailRec b (b / 2) = current with
+        | true, true, true -> findAmicableNumbersNonTailRec limit (current + 1) (sum + current)  
+        | _ -> findAmicableNumbersNonTailRec limit (current + 1) sum  
 
 
 //Module realization
@@ -86,9 +83,13 @@ let sumOfDivisors n =
 let findAmicableNumbers limit =
     let mutable amicableNumbers = Set.empty
     for number = 2 to limit - 1 do
-        if not (Set.contains number amicableNumbers) then
+        match Set.contains number amicableNumbers with
+        | true -> () 
+        | false ->
             let partner = sumOfDivisors number
-            if partner <> number && partner < limit && sumOfDivisors partner = number then
+            match partner <> number, partner < limit, sumOfDivisors partner = number with
+            | true, true, true -> 
                 amicableNumbers <- Set.add number amicableNumbers
                 amicableNumbers <- Set.add partner amicableNumbers
+            | _ -> ()
     Set.fold (+) 0 amicableNumbers
