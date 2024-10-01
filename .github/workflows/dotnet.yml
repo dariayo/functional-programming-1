@@ -42,6 +42,4 @@ jobs:
         
       - name: Tests
         run: |
-            dotnet restore Tests/Tests.fsproj
-            dotnet build ./Tests
-            dotnet test ./Tests --verbosity normal --no-build
+            dotnet test ./Tests --logger "console;verbosity=summary" --no-build --no-restore
