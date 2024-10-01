@@ -44,4 +44,4 @@ jobs:
         run: |
             dotnet restore Tests/Tests.fsproj
             dotnet build ./Tests
-            dotnet test ./Tests
+            dotnet test ./Tests --verbosity normal --no-build
