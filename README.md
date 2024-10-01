@@ -3,6 +3,7 @@
 `Шевченко Дарья 369053. Вариант 9,21`
 
 ## Задача 9. Special Pythagorean Triplet
+
 A Pythagorean triplet is a set of three natural numbers, $a \lt b \lt c$, for which,
 $$a^2 + b^2 = c^2.$$
 
@@ -11,35 +12,35 @@ For example, $3^2 + 4^2 = 9 + 16 = 25 = 5^2$.
 There exists exactly one Pythagorean triplet for which $a + b + c = 1000$.Find the product $abc$.
 
 ### Реализация рекурсией
+
 ```fsharp
 let rec findB a b =
     let c = 1000 - a - b
 
-    if a * a + b * b = c * c then
-        (a, b, c)
-    elif b < 1000 - a - 1 then
+    match a * a + b * b = c * c, b < 1000 - a - 1 with
+    | true, _ -> (a, b, c)
+    | false, true ->
         let result = findB a (b + 1)
 
         match result with
         | (-1, -1, -1) -> (-1, -1, -1)
         | _ -> result
-    else
-        (-1, -1, -1)
+    | false, false -> (-1, -1, -1)
 
 let rec findA a =
-    if a < 999 then
+    match a < 999 with
+    | true ->
         let result = findB a (a + 1)
 
-        if result <> (-1, -1, -1) then
-            result
-        else
+        match result with
+        | (-1, -1, -1) ->
             let nextResult = findA (a + 1)
 
             match nextResult with
             | (-1, -1, -1) -> (-1, -1, -1)
             | _ -> nextResult
-    else
-        (-1, -1, -1)
+        | _ -> result
+    | false -> (-1, -1, -1)
 
 let solveEuler9 =
     let a, b, c = findA 1
@@ -47,19 +48,20 @@ let solveEuler9 =
 ```
 
 ### Реализация хвостовой рекурсией
+
 ```fsharp
 let rec findPythagoreanTripletTailRec a b =
     let c = 1000 - a - b
 
-    if a * a + b * b = c * c then
-        (a, b, c)
-    elif b < 1000 - a then
-        findPythagoreanTripletTailRec a (b + 1)
-    else
-        findPythagoreanTripletTailRec (a + 1) (a + 2)
+    match a * a + b * b = c * c, b < 1000 - a with
+    | true, _ -> (a, b, c)
+    | false, true -> findPythagoreanTripletTailRec a (b + 1)
+    | false, false -> findPythagoreanTripletTailRec (a + 1) (a + 2)
+
 ```
 
 ### Модульная реализация + map
+
 ```fsharp
 let generateTriplets target =
     [ 1..target ]
@@ -75,6 +77,7 @@ let findFirstValidTriplet target =
 ```
 
 ### Ленивые коллекции
+
 ```fsharp
 let lazyTripletSeq target =
     seq {
@@ -90,6 +93,7 @@ let lazyTripletSeq target =
 ```
 
 ### Реализация на Python
+
 ```python
 def find_pythagorean_triplet(target):
     for a in range(1, target):
@@ -99,6 +103,7 @@ def find_pythagorean_triplet(target):
                 return a * b * c
     return None
 ```
+
 ## Задача 21. Amicable Numbers
 
 Let $d(n)$ be defined as the sum of proper divisors of $n$ (numbers less than $n$ which divide evenly into $n$)
@@ -110,50 +115,54 @@ For example, the proper divisors of $220$ are $1, 2, 4, 5, 10, 11, 20, 22, 44, 5
 Evaluate the sum of all the amicable numbers under $10000$.
 
 ### Реализация рекурсией
+
 ```fsharp
 let rec sumOfDivisorsNonTailRec n i =
-    if i = 0 then 0
-    elif n % i = 0 then i + sumOfDivisorsNonTailRec n (i - 1)
-    else sumOfDivisorsNonTailRec n (i - 1)
+    match i with
+    | 0 -> 0
+    | _ when n % i = 0 -> i + sumOfDivisorsNonTailRec n (i - 1)
+    | _ -> sumOfDivisorsNonTailRec n (i - 1)
 
 let rec findAmicableNumbersNonTailRec limit current sum =
-    if current >= limit then
-        sum
-    else
+    match current >= limit with
+    | true -> sum
+    | false ->
         let b = sumOfDivisorsNonTailRec current (current / 2)
 
-        if b <> current && b < limit && sumOfDivisorsNonTailRec b (b / 2) = current then
-            findAmicableNumbersNonTailRec limit (current + 1) (sum + current)
-        else
-            findAmicableNumbersNonTailRec limit (current + 1) sum
+        match b <> current, b < limit, sumOfDivisorsNonTailRec b (b / 2) = current with
+        | true, true, true -> findAmicableNumbersNonTailRec limit (current + 1) (sum + current)
+        | _ -> findAmicableNumbersNonTailRec limit (current + 1) sum
+
 ```
 
 ### Реализация хвостовой рекурсией
+
 ```fsharp
 let sumOfDivisorsTailRec n =
     let rec loop i acc =
-        if i = 0 then acc
-        elif n % i = 0 then loop (i - 1) (acc + i)
-        else loop (i - 1) acc
+        match i with
+        | 0 -> acc
+        | _ when n % i = 0 -> loop (i - 1) (acc + i)
+        | _ -> loop (i - 1) acc
 
     loop (n / 2) 0
 
 let findAmicableNumbersTailRec limit =
     let rec loop current sum =
-        if current >= limit then
-            sum
-        else
+        match current >= limit with
+        | true -> sum
+        | false ->
             let b = sumOfDivisorsTailRec current
 
-            if b <> current && b < limit && sumOfDivisorsTailRec b = current then
-                loop (current + 1) (sum + current)
-            else
-                loop (current + 1) sum
+            match b <> current, b < limit, sumOfDivisorsTailRec b = current with
+            | true, true, true -> loop (current + 1) (sum + current)
+            | _ -> loop (current + 1) sum
 
     loop 1 0
 ```
 
 ### Модульная реализация
+
 ```fsharp
 let divisors n =
     [ 1 .. n / 2 ] |> List.filter (fun x -> n % x = 0)
@@ -168,7 +177,9 @@ let isAmicableModular n =
 let sumAmicableNumbersModular limit =
     [ 2 .. limit - 1 ] |> List.filter isAmicableModular |> List.fold (+) 0
 ```
+
 ### Map
+
 ```fsharp
 let sumAmicableWithMap limit =
     [ 2 .. limit - 1 ]
@@ -176,7 +187,9 @@ let sumAmicableWithMap limit =
     |> List.sum
 
 ```
+
 ### Ленивые коллекции
+
 ```fsharp
 let sumOfDivisorsMod n =
     [ 1 .. n / 2 ] |> List.filter (fun x -> n % x = 0) |> List.sum
@@ -189,26 +202,39 @@ let findAmicableNumbersWithSeq limit =
         b <> a && b < limit && sumOfDivisorsMod b = a)
     |> Seq.sum
 ```
+
 ### Реализация с циклом
+
 ```fsharp
 let sumOfDivisors n =
     let mutable total = 0
+
     for i = 1 to n / 2 do
         if n % i = 0 then
             total <- total + i
+
     total
 
 let findAmicableNumbers limit =
     let mutable amicableNumbers = Set.empty
+
     for number = 2 to limit - 1 do
-        if not (Set.contains number amicableNumbers) then
+        match Set.contains number amicableNumbers with
+        | true -> ()
+        | false ->
             let partner = sumOfDivisors number
-            if partner <> number && partner < limit && sumOfDivisors partner = number then
+
+            match partner <> number, partner < limit, sumOfDivisors partner = number with
+            | true, true, true ->
                 amicableNumbers <- Set.add number amicableNumbers
                 amicableNumbers <- Set.add partner amicableNumbers
+            | _ -> ()
+
     Set.fold (+) 0 amicableNumbers
 ```
+
 ### Реализация на Python
+
 ```python
 def sum_of_divisors(n):
     total = 0
@@ -229,10 +255,11 @@ def find_amicable_numbers(limit):
     
     return sum(amicable_numbers)
 ```
+
 ## Выводы
 
-F# показался мне достаточно простым и понятным по синтаксису, было легко привыкнуть. 
+F# показался мне достаточно простым и понятным по синтаксису, было легко привыкнуть.
 
-Я познакомилась с такими функциями, как List.map, List.filter и List.fold, они сделали код более компактным и понятным. Использование функции filter для отсеивания неподходящих значений делает код более декларативным. 
+Я познакомилась с такими функциями, как List.map, List.filter и List.fold, они сделали код более компактным и понятным. Использование функции filter для отсеивания неподходящих значений делает код более декларативным.
 
-Также я воспользовалась ленивыми коллекциями (seq), которые, например, в задаче с Пифагоровыми тройками позволяют эффективно обрабатывать данные по мере необходимости, что улучшает производительность. 
+Также я воспользовалась ленивыми коллекциями (seq), которые, например, в задаче с Пифагоровыми тройками позволяют эффективно обрабатывать данные по мере необходимости, что улучшает производительность.

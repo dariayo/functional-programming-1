@@ -46,13 +46,13 @@ module Tests =
     let ``Test map realization problem 21`` () =
         let result = sumAmicableWithMap 10000
         Assert.AreEqual(31626, result)
-    
+
     [<Test>]
     let ``Test lazy realization problem 21`` () =
         let result = findAmicableNumbersWithSeq 10000
         Assert.AreEqual(31626, result)
-    
+
     [<Test>]
     let ``Test cycle realization`` () =
-        let result =  findAmicableNumbers 10000
+        let result = findAmicableNumbers 10000
         Assert.AreEqual(31626, result)
