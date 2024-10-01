@@ -41,5 +41,4 @@ jobs:
         run: dotnet run --project ./
         
       - name: Tests
-        run: |
-            dotnet test ./Tests --logger "console;verbosity=summary" --no-build --no-restore
+        run: dotnet test ./Tests --logger "console;verbosity=summary" --no-build --no-restore
